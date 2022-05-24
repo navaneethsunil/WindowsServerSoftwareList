@@ -1,0 +1,36 @@
+---
+- name: List all Softwares on Windows Server
+  hosts: all
+  vars:
+    uuids: |
+      {%- set o=[] %}
+      {%- for i in play_hosts %}
+        {%- if o.append(hostvars[i].uuid) %}
+        {%- endif %}
+      {%- endfor %}
+      {{ o }}
+  tasks:
+  - name: Initialize empty lists to store software names, host ip, and versions
+    delegate_to: 192.168.1.44
+    set_fact:
+      snames: []
+      sversions: []
+      shost: []
+
+  - name: List all software into the software variable in dictionary form
+    delegate_to: 192.168.1.44
+    ansible.windows.win_shell: Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table –AutoSize
+    register: software
+
+  - name: combine data from all windows host
+    set_fact:
+        uuid: "{{ software }}"
+
+  - name: write list of softwares into excel files
+    delegate_to: 192.168.1.41
+    copy:
+      content: "{{ uuids }}"
+      dest: "SoftwareList.csv"
+
+  - debug:
+        msg: "List of all programs on the host has been created in the home directory."
