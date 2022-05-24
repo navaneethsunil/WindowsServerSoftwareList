@@ -20,7 +20,7 @@
   - name: combine data from all windows host
     delegate_to: 192.168.1.44
     set_fact:
-        uuid: "{{ software | join(', ') }}"
+        uuid: "{{ software.stdout_lines }}"
 
   - name: write list of softwares into excel files
     delegate_to: 192.168.1.41
