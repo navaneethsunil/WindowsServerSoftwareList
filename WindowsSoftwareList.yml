@@ -25,7 +25,7 @@
   - name: write list of softwares into excel files
     delegate_to: 192.168.1.41
     copy:
-      content: "{{ uuids }}"
+      content: "{{ uuids | join() | join() }}"
       dest: "SoftwareList.txt"
 
   - debug:
