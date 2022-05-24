@@ -14,7 +14,7 @@
   - name: List all software into the software variable in dictionary form
     delegate_to: 192.168.1.44
     ansible.builtin.win_shell: |
-               Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion
+               Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName
     register: software
 
   - name: combine data from all windows host
