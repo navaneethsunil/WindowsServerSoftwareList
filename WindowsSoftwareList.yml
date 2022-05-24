@@ -9,20 +9,15 @@
         {%- endif %}
       {%- endfor %}
       {{ o }}
-  tasks:
-  - name: Initialize empty lists to store software names, host ip, and versions
-    delegate_to: 192.168.1.44
-    set_fact:
-      snames: []
-      sversions: []
-      shost: []
 
+  tasks:
   - name: List all software into the software variable in dictionary form
     delegate_to: 192.168.1.44
     ansible.windows.win_shell: Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table –AutoSize
     register: software
 
   - name: combine data from all windows host
+    delegate_to: 192.168.1.44
     set_fact:
         uuid: "{{ software }}"
 
