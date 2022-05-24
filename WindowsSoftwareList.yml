@@ -26,7 +26,7 @@
     delegate_to: 192.168.1.41
     copy:
       content: "{{ uuids | join(', ') }}"
-      dest: "SoftwareList.csv"
+      dest: "SoftwareList.txt"
 
   - debug:
         msg: "List of all programs on the host has been created in the home directory."
