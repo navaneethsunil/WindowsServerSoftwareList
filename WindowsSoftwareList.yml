@@ -68,13 +68,13 @@
         name: "192.168.1.41"
         VAR2_NEW: "{{ uuids | join(', ') }}"
 
-- name: Store windowss list of software on control servers
+- name: Store windowss list of software on the control server
   hosts: 192.168.1.41
 
   tasks:
-  - name: copy decrypted password into a file
+  - name: copy windows software list to csv file WindowsSoftwareList.csv
     copy:
-      content: "{{ hostvars['192.168.1.41']['VAR_NEW'] }}"
+      content: "{{ hostvars['192.168.1.41']['VAR2_NEW'] }}"
       dest: "WindowsSoftwareList.csv"
 
   - debug:
