@@ -71,7 +71,7 @@
   - name: combine data from all windows host
     delegate_to: 192.168.1.44
     set_fact:
-        uuid: "{{ shost | zip(snames) | map('join', ', ') | zip(sversions) | map('join', ', ') | join('\n') }}"
+        uuid: "{{ snames | zip(sversions) | map('join', ', ') | zip(shost) | map('join', ', ') | join('\n') }}"
 
   - name: write list of softwares into excel files
     delegate_to: 192.168.1.41
