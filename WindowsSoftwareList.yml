@@ -1,6 +1,6 @@
 ---
 - name: List all Softwares on Windows Server
-  hosts: all
+  hosts: 192.168.1.44
   vars:
     uuids: |
       {%- set o=[] %}
@@ -12,72 +12,70 @@
 
   tasks:
   - name: List all x64 software names into the software variable in dictionary form
-    delegate_to: 192.168.1.44
     ansible.builtin.win_shell: |
                Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName
     register: software
     
   - name: List all x64 software versions into the softwareversion variable in dictionary form
-    delegate_to: 192.168.1.44
     ansible.builtin.win_shell: |
                Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayVersion
     register: softwareversion
 
   - name: List all 32bit software names into the software variable in dictionary form
-    delegate_to: 192.168.1.44
     ansible.builtin.win_shell: |
                Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName
     register: softwarenames
 
   - name: List all 32bit software versions into the software variable in dictionary form
-    delegate_to: 192.168.1.44
     ansible.builtin.win_shell: |
                Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayVersion
     register: softwareversion2
 
   - name: Initialize empty lists to store software names, host ip, and versions
-    delegate_to: 192.168.1.44
     set_fact:
       snames: []
       shost: []
       sversions: []
 
   - name: add names and host ip of x64 softwares
-    delegate_to: 192.168.1.44
     with_items: "{{ software.stdout_lines }}"
     set_fact:
       snames: "{{ snames + [ item ] }}"
       shost: "{{ shost + [ ansible_ssh_host ] }}"
 
   - name: add names and host ip of 32 bit softwares
-    delegate_to: 192.168.1.44
     with_items: "{{ softwarenames.stdout_lines }}"
     set_fact:
       snames: "{{ snames + [ item ] }}"
       shost: "{{ shost + [ ansible_ssh_host ] }}"
 
   - name: add versions of x64 softwares
-    delegate_to: 192.168.1.44
     with_items: "{{ softwareversion.stdout_lines }}"
     set_fact:
       sversions: "{{ sversions + [ item ] }}"
 
   - name: add versions of 32 bit softwares
-    delegate_to: 192.168.1.44
     with_items: "{{ softwareversion2.stdout_lines }}"
     set_fact:
       sversions: "{{ sversions + [ item ] }}"
 
   - name: combine data from all windows host
-    delegate_to: 192.168.1.44
     set_fact:
         uuid: "{{ shost | zip(snames) | map('join', ', ') | zip(sversions) | map('join', ', ') | join('\n') }}"
 
-  - name: write list of softwares into excel files
-    delegate_to: 192.168.1.41
+  - name: write list of softwares into a variable
+    add_host:
+        name: "192.168.1.41"
+        VAR2_NEW: "{{ uuids | join(', ') }}"
+
+- name: Store windowss list of software on control servers
+  hosts: 192.168.1.41
+
+  tasks:
+  - name: copy decrypted password into a file
     copy:
-      content: "{{ uuids | join(', ') }}"
-      dest: "SoftwareList.csv"
+      content: "{{ hostvars['192.168.1.41']['VAR_NEW'] }}"
+      dest: "WindowsSoftwareList.csv"
 
   - debug:
         msg: "List of all programs on the host has been created in the home directory."
