@@ -41,8 +41,6 @@
       snames: []
       shost: []
       sversions: []
-      snames2: []
-      sversions2: []
 
   - name: add names and host ip of x64 softwares
     delegate_to: 192.168.1.44
@@ -55,33 +53,25 @@
     delegate_to: 192.168.1.44
     with_items: "{{ softwarenames.stdout_lines }}"
     set_fact:
-      snames: "{{ snames2 + [ item ] }}"
+      snames: "{{ snames + [ item ] }}"
       shost: "{{ shost + [ ansible_ssh_host ] }}"
 
   - name: add versions of x64 softwares
     delegate_to: 192.168.1.44
     with_items: "{{ softwareversion.stdout_lines }}"
     set_fact:
-      snames: "{{ sversions + [ item ] }}"
-      shost: "{{ shost + [ ansible_ssh_host ] }}"
+      sversions: "{{ sversions + [ item ] }}"
 
   - name: add versions of 32 bit softwares
     delegate_to: 192.168.1.44
     with_items: "{{ softwareversion2.stdout_lines }}"
     set_fact:
-      snames: "{{ sversions2 + [ item ] }}"
-      shost: "{{ shost + [ ansible_ssh_host ] }}"
-
-  - name: Combine both names and versions list
-    delegate_to: 192.168.1.44
-    set_fact:
-      snames: "{{ snames + snames2 }}"
-      sversions: "{{ sversions + sversions2 }}"
+      sversions: "{{ sversions + [ item ] }}"
 
   - name: combine data from all windows host
     delegate_to: 192.168.1.44
     set_fact:
-        uuid: "{{ shost | zip(snames) | map('join', ', ') | join('\n') }}"
+        uuid: "{{ shost | zip(snames) | map('join', ', ') | zip(sversions) | map('join', ', ') | join('\n') }}"
 
   - name: write list of softwares into excel files
     delegate_to: 192.168.1.41
