@@ -15,21 +15,29 @@
     ansible.builtin.win_shell: |
                Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName
     register: software
+    vars:
+      software: "{{ software | trim }}"
     
   - name: List all x64 software versions into the softwareversion variable in dictionary form
     ansible.builtin.win_shell: |
                Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayVersion
     register: softwareversion
+    vars:
+      softwareversion: "{{ softwareversion | trim }}"
 
   - name: List all 32bit software names into the software variable in dictionary form
     ansible.builtin.win_shell: |
                Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName
     register: softwarenames
+    vars:
+      softwarenames: "{{ softwarenames | trim }}"
 
   - name: List all 32bit software versions into the software variable in dictionary form
     ansible.builtin.win_shell: |
                Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayVersion
     register: softwareversion2
+    vars:
+      softwareversion2: "{{ softwareversion2 | trim }}"
 
   - name: Initialize empty lists to store software names, host ip, and versions
     set_fact:
