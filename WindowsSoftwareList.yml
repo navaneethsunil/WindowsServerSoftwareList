@@ -38,22 +38,22 @@
       sversions: []
 
   - name: add names and host ip of x64 softwares
-    with_items: "{{ software.stdout_lines | map('trim') | list }}"
+    with_items: "{{ software.stdout_lines }}"
     set_fact:
       snames: "{{ snames + [ item ] }}"
 
   - name: add names and host ip of 32 bit softwares
-    with_items: "{{ softwarenames.stdout_lines | map('trim') | list }}"
+    with_items: "{{ softwarenames.stdout_lines }}"
     set_fact:
       snames: "{{ snames + [ item ] }}"
 
   - name: add versions of x64 softwares
-    with_items: "{{ softwareversion.stdout_lines | map('trim') | list }}"
+    with_items: "{{ softwareversion.stdout_lines }}"
     set_fact:
       sversions: "{{ sversions + [ item ] }}"
 
   - name: add versions of 32 bit softwares
-    with_items: "{{ softwareversion2.stdout_lines | map('trim') | list }}"
+    with_items: "{{ softwareversion2.stdout_lines }}"
     set_fact:
       sversions: "{{ sversions + [ item ] }}"
 
