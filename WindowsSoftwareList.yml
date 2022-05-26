@@ -62,6 +62,9 @@
       snamesfinal: "{{ snames | select('a-zA-Z0-9') }}"
       sversionsfinal: "{{ sversions | select('a-zA-Z0-9') }}"
 
+  - debug:
+        msg: "{{ snamesfinal }}"
+
   - name: add host ip for each softwarename
     with_items: "{{ snamesfinal }}"
     set_fact:
