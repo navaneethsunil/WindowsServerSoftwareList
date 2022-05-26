@@ -59,11 +59,14 @@
 
   - name: remove empty values from lists
     set_fact:
-      snamesfinal: "{{ snames | select('a-zA-Z0-9') }}"
-      sversionsfinal: "{{ sversions | select('a-zA-Z0-9') }}"
+      snamesfinal: "{{ snames | select('\b[a-zA-Z0-9]+\b') }}"
+      sversionsfinal: "{{ sversions | select('\b[a-zA-Z0-9]+\b') }}"
 
   - debug:
         msg: "{{ snamesfinal }}"
+
+  - debug:
+        msg: "{{ snames }}"
 
   - name: add host ip for each softwarename
     with_items: "{{ snamesfinal }}"
