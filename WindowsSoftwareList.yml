@@ -59,8 +59,8 @@
 
   - name: remove empty values from lists
     set_fact:
-      snamesfinal: "{{ snames | select('a-zA-Z0-9') | list }}"
-      sversionsfinal: "{{ sversions | select('a-zA-Z0-9') | list }}"
+      snamesfinal: "{{ snames | select() | list }}"
+      sversionsfinal: "{{ sversions | select() | list }}"
 
   - debug:
         msg: "{{ snamesfinal }}"
